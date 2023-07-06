@@ -85,7 +85,7 @@ window.addEventListener('load', function() {
             this.width = this.canvas.width;
             this.height = this.canvas.height;
             this.player = new Player(this);
-            this.numberOfObstacles = 5;
+            this.numberOfObstacles = 10;
             this.obstacles = [];
             this.mouse = {
                 x: this.width * 0.5,
@@ -119,8 +119,32 @@ window.addEventListener('load', function() {
             this.obstacles.forEach(Obstacle => Obstacle.draw(context));
         }
         init() {
-            for (let i = 0; i < this.numberOfObstacles; i++) {
-                this.obstacles.push(new Obstacle(this));
+            // create random obstacle which is for loop 5 obstacles
+            // for (let i = 0; i < this.numberOfObstacles; i++) {
+            //     this.obstacles.push(new Obstacle(this));
+            // }
+            // create overlapping obstacle: circle packing or Brute force algorithm
+            // it just tries over and over many times
+            let attemps = 0;
+            while (this.obstacles.length < this.numberOfObstacles && attemps < 500) {
+                let testObstacle = new Obstacle(this);
+                let overlap = false;
+                console.log(testObstacle);
+                // use circle collision detection formula
+                this.obstacles.forEach(obstacle => {
+                    const dx = testObstacle.collisionX - obstacle.collisionX;
+                    const dy = testObstacle.collisionY - obstacle.collisionY;
+                    const distance = Math.hypot(dy, dx);
+                    const sumOfRadii = testObstacle.collisionRadius + obstacle.collisionRadius;
+                    if (distance < sumOfRadii) {
+                        overlap = true;
+                    }
+                });
+                if (!overlap) {
+                    this.obstacles.push(testObstacle);
+                }
+                attemps++
+
             }
         }
 
