@@ -54,6 +54,12 @@ window.addEventListener('load', function() {
             // this.collisionX = this.game.mouse.x;
             this.collisionX += this.speedX * this.speedModifier;
             this.collisionY += this.speedY * this.speedModifier;
+            // collision with obstacles
+            this.game.obstacles.forEach(obstacle => {
+                if (this.game.checkCollision(this, obstacle)) {
+                    console.log("collision");
+                }
+            })
         }
     }
 
@@ -129,6 +135,13 @@ window.addEventListener('load', function() {
             this.player.draw(context);
             this.player.update();
             this.obstacles.forEach(Obstacle => Obstacle.draw(context));
+        }
+        checkCollision(a, b) {
+            const dx = a.collisionX - b.collisionX;
+            const dy = a.collisionY - b.collisionY;
+            const distance = Math.hypot(dy, dx);
+            const sumOfRadii = a.collisionRadius + b.collisionRadius;
+            return (distance < sumOfRadii);
         }
         init() {
             // create random obstacle which is for loop 5 obstacles
